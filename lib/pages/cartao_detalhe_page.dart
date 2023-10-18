@@ -1,6 +1,7 @@
 import 'package:expense_tracker/components/conta_item.dart';
 import 'package:expense_tracker/models/cartao.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:intl/intl.dart';
 
 class CartaoDetalhePage extends StatefulWidget {
@@ -23,24 +24,48 @@ class _CartaoDetalhePageState extends State<CartaoDetalhePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListTile(
-              title: const Text('Numero cartão'),
-              subtitle: Text(NumberFormat.simpleCurrency(locale: 'pt_BR')
-                  .format(cartao.cardNumber)),
+            Container(
+              child: Column(
+               children: [
+            CreditCardWidget(
+              onCreditCardWidgetChange: (CreditCardBrand brand) {
+                // Você pode lidar com as alterações no widget do cartão de crédito aqui
+              },
+              cardNumber: cartao.cardNumber,
+              expiryDate: cartao.expiryDate.toString(),
+              cardHolderName: cartao.cardHolderName,
+              cvvCode: cartao.cvvCode,
+              showBackView: false,
             ),
-            ListTile(
-              title: const Text('Nome cartão'),
-              subtitle: Text(cartao.cardHolderName),
+            SizedBox(
+              height: 20,
+              width: 50,
+            ), // Espaço entre o cartão de crédito e o texto
+            Container(
+              child: Column(
+                children: [
+                  Text(
+                    'Limite do Cartão de Crédito',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                    width: 20,
+                  ), // Espaço entre o texto e a barra de progresso
+                  LinearProgressIndicator(
+                    value:
+                        0.5, // Defina o valor da barra de progresso conforme necessário (entre 0 e 1)
+                  ),
+                                    Text(
+                    'total: ${cartao.limite}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              title: const Text('Data do vencimento'),
-              subtitle: Text(DateFormat('dd/yyyy').format(cartao.expiryDate)),
-            ),
-            ListTile(
-              title: const Text('CVV'),
-              subtitle:
-                  Text(cartao.cvvCode),
-            ),
+          ],
+        ),
+            )
           ],
         ),
       ),

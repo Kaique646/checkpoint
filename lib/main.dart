@@ -1,4 +1,5 @@
 import 'package:expense_tracker/pages/cartao_cadastro_page.dart';
+import 'package:expense_tracker/pages/cartao_detalhe_page.dart';
 import 'package:expense_tracker/pages/conta_cadastro_page.dart';
 import 'package:expense_tracker/pages/home_page.dart';
 import 'package:expense_tracker/pages/login_page.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         "/registrar": (context) => const RegistrarPage(),
         "/transacao-detalhes": (context) => const TransacaoDetalhesPage(),
         "/transacao-cadastro": (context) => const TransacaoCadastroPage(),
+        "/cartao-detalhes": (context) => const CartaoDetalhePage(),
         "/cartao-cadastro": (context) => const cartaoCadastroPage(),
         "/conta-cadastro": (context) => const ContaCadastroPage(),
       },

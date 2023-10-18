@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     return IndexedStack(
       index: pageIndex,
       children: const [
-        CartaopPage(),
+        CartaoPage(),
         TransacoesPage(),
         ContasPage(),
         CategoriasPage(),

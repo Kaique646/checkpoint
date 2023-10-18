@@ -1,69 +1,121 @@
+import 'package:expense_tracker/components/cartao_item.dart';
+import 'package:expense_tracker/models/cartao.dart';
+import 'package:expense_tracker/repository/Cartao_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 
-class CartaopPage extends StatefulWidget {
-  const CartaopPage({super.key});
+class CartaoPage extends StatefulWidget {
+  const CartaoPage({super.key});
 
   @override
-  State<CartaopPage> createState() => _CartaoPageState();
+  State<CartaoPage> createState() => _CartaoPageState();
 }
 
-class _CartaoPageState extends State<CartaopPage> {
+class _CartaoPageState extends State<CartaoPage> {
+  final CartaoRepo = CartaoRepository();
+  late Future<List<Cartao>> futureCartao;
+
+  @override
+  void initState() {
+    futureCartao = CartaoRepo.listarCartaos();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cartão de Crédito'),
+        title: const Text('Cartões'),
+        actions: [
+          // create a filter menu action
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: const Text('Todas'),
+                  onTap: () {
+                    setState(() {
+                      futureCartao = CartaoRepo.listarCartaos();
+                    });
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Text('Receitas'),
+                  onTap: () {
+                    setState(() {
+                      futureCartao = CartaoRepo.listarCartaos();
+                    });
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Text('Despesas'),
+                  onTap: () {
+                    setState(() {
+                      futureCartao = CartaoRepo.listarCartaos();
+                    });
+                  },
+                ),
+              ];
+            },
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          children: [
-            CreditCardWidget(
-              onCreditCardWidgetChange: (CreditCardBrand brand) {
-                // Você pode lidar com as alterações no widget do cartão de crédito aqui
+      body: FutureBuilder<List<Cartao>>(
+        future: futureCartao,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Erro ao carregar contas"),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text("Nenhuma conta encontrada"),
+            );
+          } else {
+            final Cartao = snapshot.data!;
+            return ListView.separated(
+              itemCount: Cartao.length,
+              itemBuilder: (context, index) {
+                final cartao = Cartao[index];
+                return CartaoItem(
+                  cartao: cartao,
+                  onTap: () {
+                    Navigator.pushNamed(context, '/cartao-detalhes',
+                        arguments: cartao);
+                  },
+                );
               },
-              cardNumber: '1234 5678 9012 3456',
-              expiryDate: '12/24',
-              cardHolderName: 'John Doe',
-              cvvCode: '123',
-              showBackView: false,
-            ),
-            SizedBox(
-              height: 20,
-              width: 50,
-            ), // Espaço entre o cartão de crédito e o texto
-            Container(
-              child: Column(
-                children: [
-                  Text(
-                    'Limite do Cartão de Crédito',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 10,
-                    width: 20,
-                  ), // Espaço entre o texto e a barra de progresso
-                  LinearProgressIndicator(
-                    value:
-                        0.5, // Defina o valor da barra de progresso conforme necessário (entre 0 e 1)
-                  ),
-                                    Text(
-                    'total: ',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+            );
+          }
+        },
       ),
-            floatingActionButton: FloatingActionButton(
-        heroTag: "cartao-cadastro",
+      floatingActionButton: FloatingActionButton(
+        heroTag: "transacao-cadastro",
         onPressed: () {
-          Navigator.pushNamed(context, '/cartao-cadastro');
+          Navigator.pushNamed(context, '/transacao-cadastro');
         },
         child: const Icon(Icons.add),
-      )
+      ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
